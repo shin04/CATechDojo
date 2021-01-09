@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"api/database"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	fmt.Println("Hello TechTrain!!")
+	database.Init()
+
+	r := gin.Default()
+
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, "Hello!!!")
+	})
+
+	r.Run()
 }
