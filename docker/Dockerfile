@@ -7,4 +7,4 @@ RUN apk add build-base
 
 RUN go get github.com/pilu/fresh
 
-CMD ["fresh"]
+# CMD ["fresh"]

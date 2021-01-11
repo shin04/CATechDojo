@@ -1,3 +1,5 @@
 .DSStore
 
 .env
+
+mysql/db_data

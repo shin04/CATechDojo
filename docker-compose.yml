@@ -13,7 +13,7 @@ services:
       - "3306:3306"
     volumes:
       - ./mysql/db_init:/docker-entrypoint-initdb.d
-      # - ./docker/db/db_data:/var/lib/mysql
+      - ./mysql/db_data:/var/lib/mysql
     networks:
       - default
 
@@ -29,3 +29,4 @@ services:
     tty: true
     depends_on:
       - mysql
+    command: fresh
