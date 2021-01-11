@@ -8,7 +8,7 @@ import (
 func main() {
 	database.Init()
 
+	router := &router.Router{}
 	router.Init()
-	router := router.GetRouter()
 	router.Run()
 }

@@ -6,21 +6,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var router *gin.Engine
+// var router *gin.Engine
 
-func Init() {
-	router = gin.Default()
+type Router struct {
+	Engin *gin.Engine
+}
 
-	router.GET("/", func(c *gin.Context) {
+func (router *Router) Init() {
+	router.Engin = gin.Default()
+
+	router.Engin.GET("/", func(c *gin.Context) {
 		c.JSON(200, "Hello!!!")
 	})
 
 	// user api
-	router.POST("/user/create", controller.CreateUser)
-	router.GET("/user/get", controller.GetUser)
-	router.PUT("/user/update", controller.UpdateUser)
+	router.Engin.POST("/user/create", controller.CreateUser)
+	router.Engin.GET("/user/get", controller.GetUser)
+	router.Engin.PUT("/user/update", controller.UpdateUser)
 }
 
-func GetRouter() *gin.Engine {
-	return router
+func (router *Router) Run() {
+	router.Engin.Run()
 }
