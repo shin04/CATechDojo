@@ -13,7 +13,6 @@ import (
 var db *gorm.DB
 var err error
 
-// Init initializes database
 func Init() {
 	err := godotenv.Load(fmt.Sprintf("../%s.env", os.Getenv("GO_ENV")))
 	if err != nil {
@@ -34,7 +33,6 @@ func Init() {
 	}
 }
 
-// GetDB is called in models
 func GetDB() *gorm.DB {
 	return db
 }
