@@ -1,5 +1,5 @@
 .DSStore
 
-.env
+.env*
 
 mysql/db_data

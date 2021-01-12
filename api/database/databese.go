@@ -1,11 +1,11 @@
 package database
 
 import (
+	"api/config"
+
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -13,16 +13,12 @@ import (
 var db *gorm.DB
 var err error
 
-func Init() {
-	err := godotenv.Load(fmt.Sprintf("../%s.env", os.Getenv("GO_ENV")))
-	if err != nil {
-		println("Error loading .env file")
-	}
-	DB_USER := os.Getenv("DB_USER")
-	DB_PASS := os.Getenv("DB_PASS")
-	DB_HOST := os.Getenv("DB_HOST")
-	DB_NAME := os.Getenv("DB_NAME")
-	DB_PORT := os.Getenv("DB_PORT")
+func Init(config *config.Config) {
+	DB_USER := config.DB.Username
+	DB_PASS := config.DB.Password
+	DB_HOST := config.DB.Host
+	DB_NAME := config.DB.Name
+	DB_PORT := config.DB.Port
 
 	dsn := DB_USER + ":" + DB_PASS + "@tcp(" + DB_HOST + ":" + DB_PORT + ")/" + DB_NAME
 	dsn += "?charset=utf8mb4&parseTime=True&loc=Local"

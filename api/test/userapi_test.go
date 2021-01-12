@@ -1,6 +1,7 @@
 package test
 
 import (
+	"api/config"
 	"api/database"
 	"api/router"
 
@@ -18,7 +19,10 @@ func TestMain(m *testing.M) {
 }
 
 func Setup() {
-	database.Init()
+	config := &config.Config{}
+	config.Init()
+
+	database.Init(config)
 }
 
 func TestResponse(t *testing.T) {
@@ -27,7 +31,7 @@ func TestResponse(t *testing.T) {
 
 	body := strings.NewReader(`{"name": "name"}`)
 
-	req := httptest.NewRequest("POST", "user/create", body)
+	req := httptest.NewRequest("POST", "/user/create", body)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 

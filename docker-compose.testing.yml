@@ -1,29 +1,18 @@
 version: "3"
 
 services:
-  mysql:
+  mysql-test:
     image: mysql:5.7
     container_name: game_db_test
+    env_file: .env.test
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
       MYSQL_ROOT_PASSWORD: ${ROOTPASS}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - ./mysql/db_init:/docker-entrypoint-initdb.d
     networks:
       - default
-
-  golang:
-    build:
-      context: ./docker
-    container_name: golang
-    volumes:
-      - .:/go/src
-    working_dir: /go/src/api/test
-    tty: true
-    depends_on:
-      - mysql
-    command: go test
