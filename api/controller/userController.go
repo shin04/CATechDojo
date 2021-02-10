@@ -47,6 +47,15 @@ func CreateUser(c *gin.Context) {
 	c.JSON(200, res)
 }
 
+func GetAllUser(c *gin.Context) {
+	users, err := models.GetAllUser(database.GetDB())
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	c.JSON(200, users)
+}
+
 func GetUser(c *gin.Context) {
 	token := c.GetHeader("x-token")
 

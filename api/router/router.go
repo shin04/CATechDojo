@@ -20,6 +20,7 @@ func (router *Router) Init() {
 	})
 
 	// user api
+	router.Engin.GET("/users", controller.GetAllUser)
 	router.Engin.POST("/user/create", controller.CreateUser)
 	router.Engin.GET("/user/get", controller.GetUser)
 	router.Engin.PUT("/user/update", controller.UpdateUser)

@@ -40,3 +40,14 @@ func GetUser(db *gorm.DB, token string) (*User, error) {
 
 	return &user, nil
 }
+
+func GetAllUser(db *gorm.DB) ([]User, error) {
+	var users []User
+	result := db.Find(&users)
+
+	if err := result.Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
