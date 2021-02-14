@@ -2,6 +2,7 @@ package router
 
 import (
 	"api/controller"
+	"api/middleware"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -25,6 +26,8 @@ func (router *Router) Init() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	router.Engin.Use(middleware.ErrorHandler())
 
 	router.Engin.GET("/", func(c *gin.Context) {
 		c.JSON(200, "Hello!!!")

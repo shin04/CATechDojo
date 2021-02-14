@@ -5,8 +5,6 @@ import (
 	"api/database"
 	"api/models"
 
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +28,8 @@ func CreateUser(c *gin.Context) {
 	req := &UserCreateRequest{}
 	err := c.Bind(req)
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	var token string
@@ -39,7 +38,8 @@ func CreateUser(c *gin.Context) {
 	user := &models.User{Name: req.Name, Token: token}
 	err = user.CreateUser(database.GetDB())
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	res := &UserCreateResponse{Token: token}
@@ -50,7 +50,8 @@ func CreateUser(c *gin.Context) {
 func GetAllUser(c *gin.Context) {
 	users, err := models.GetAllUser(database.GetDB())
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	c.JSON(200, users)
@@ -61,7 +62,8 @@ func GetUser(c *gin.Context) {
 
 	user, err := models.GetUser(database.GetDB(), token)
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	res := &UserGetResponse{Name: user.Name}
@@ -74,17 +76,20 @@ func UpdateUser(c *gin.Context) {
 	req := &UserUpdateRequest{}
 	err := c.Bind(req)
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	user, err := models.GetUser(database.GetDB(), token)
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	err = user.UpdateUser(database.GetDB(), req.Name)
 	if err != nil {
-		fmt.Println(err)
+		c.Error(err).SetType(gin.ErrorTypePublic)
+		return
 	}
 
 	c.JSON(200, gin.H{})
