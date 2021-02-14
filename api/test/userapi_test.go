@@ -15,6 +15,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type reqBody map[string]string
+
 func TestMain(m *testing.M) {
 	Setup()
 	m.Run()
@@ -27,46 +29,51 @@ func Setup() {
 	database.Init(config)
 }
 
+func createRequest(body reqBody, method string, endpoint string, token string) *http.Request {
+	bodyByte, _ := json.Marshal(body)
+	reqBody := strings.NewReader(string(bodyByte))
+	req := httptest.NewRequest(method, endpoint, reqBody)
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("x-token", token)
+
+	return req
+}
+
 func TestResponse(t *testing.T) {
 	router := &router.Router{}
 	router.Init()
 
+	var req *http.Request
+	var rec *httptest.ResponseRecorder
+
 	// testing /user/create
-	req_body := strings.NewReader(`{"name": "name"}`)
-	req := httptest.NewRequest("POST", "/user/create", req_body)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
-	rec := httptest.NewRecorder()
+	createReqBody := reqBody{"name": "name"}
+	req = createRequest(createReqBody, "POST", "/user/create", "")
+	rec = httptest.NewRecorder()
 	router.Engin.ServeHTTP(rec, req)
 
-	var create_res_body controller.UserCreateResponse
-	err := json.Unmarshal([]byte(rec.Body.String()), &create_res_body)
+	var createResBody controller.UserCreateResponse
+	err := json.Unmarshal([]byte(rec.Body.String()), &createResBody)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.Equal(t, nil, err)
 
 	// tesiting /user/get
-	token_string := create_res_body.Token
-	req_body = strings.NewReader("")
-	req = httptest.NewRequest("GET", "/user/get", req_body)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("x-token", token_string)
+	tokenString := createResBody.Token
+	req = createRequest(reqBody{}, "GET", "/user/get", tokenString)
 	rec = httptest.NewRecorder()
 	router.Engin.ServeHTTP(rec, req)
 
-	var get_res_body controller.UserGetResponse
-	_ = json.Unmarshal([]byte(rec.Body.String()), &get_res_body)
+	var getResBody controller.UserGetResponse
+	_ = json.Unmarshal([]byte(rec.Body.String()), &getResBody)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "name", get_res_body.Name)
+	assert.Equal(t, "name", getResBody.Name)
 
 	// testing /user/update
-	req_body = strings.NewReader(`{"name": "hogehoge"}`)
-	req = httptest.NewRequest("PUT", "/user/update", req_body)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("x-token", token_string)
+	updateReqBody := reqBody{"name": "rename"}
+	req = createRequest(updateReqBody, "PUT", "/user/update", tokenString)
 	rec = httptest.NewRecorder()
 	router.Engin.ServeHTTP(rec, req)
 
