@@ -2,7 +2,9 @@ package router
 
 import (
 	"api/controller"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,6 +16,15 @@ type Router struct {
 
 func (router *Router) Init() {
 	router.Engin = gin.Default()
+
+	router.Engin.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT"},
+		AllowHeaders:     []string{"content-type", "Origin", "x-token"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	router.Engin.GET("/", func(c *gin.Context) {
 		c.JSON(200, "Hello!!!")
